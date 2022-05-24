@@ -18,7 +18,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 def landing_page():
-    st.title("Twitterazi : See what your favourite influencers are tweeting about.")
+    st.title("Twitterazi")
+    st.text("See what your favourite influencers are tweeting about")
     state = st.session_state
 
     if 'submit' not in state:
@@ -129,7 +130,7 @@ def get_usernames():
         st.write("eg - CNN or billgates")
         usernames, submit = st.columns([2,1])
         with usernames:
-            ids = st.text_input('Enter usernames')
+            ids = st.text_input('Enter usernames', placeholder = 'eg - CNN or billgates')
         with submit:
             st.text('Enter')
             submit_request = st.form_submit_button(label = 'Submit')
