@@ -120,7 +120,7 @@ def plot_wordcloud(wordcloud):
 
 def get_tweets_wKeyword(top_words,tweets):
     option = st.selectbox('Top keywords',top_words)
-    tweets = list(tweets.values())
+    tweets = list(tweets )
     key_tweets = [tweet for tweet in tweets if option in tweet]
     return key_tweets
 
