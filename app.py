@@ -3,8 +3,7 @@ import ast
 import itertools
 import matplotlib.pyplot as plt
 import matplotlib
-from UI.utils.post_req import *
-from UI.utils.get_visuals import *
+from UI.get_visuals import get_wordcloud
 import time
 
 #from fastapi import FastAPI, Request
@@ -38,9 +37,6 @@ def landing_page():
     if submit == True or state.submit == True:
         state.submit = True
         if state.response == {}:
-            #url, health, form = get_endpoint()
-            #response = post_req(url, form, ids)
-            #response = ast.literal_eval(response)
             response = run_bot(ids)
             state.response = response
         #print("Respone from soln")
@@ -58,16 +54,6 @@ def landing_page():
             wordcloud = get_wordcloud(response['keywords'])
             state.wordcloud = wordcloud
         wordcloud = state.wordcloud
-        
-        
-        #if state.fig == {}:
-        #    fig = plt.figure(figsize=(40, 30))
-        #    # Display image
-        #    plt.imshow(wordcloud) 
-        #    # No axis 
-        #    plt.axis("off")
-        #    plt.show()
-        #    state.fig = fig
         
         #fig = state.fig
         st.pyplot(plot_wordcloud(wordcloud))  
