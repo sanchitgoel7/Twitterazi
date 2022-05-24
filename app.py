@@ -127,7 +127,6 @@ def get_tweets_wKeyword(top_words,tweets):
 
 def get_usernames():
     with st.form(key = 'usernames', clear_on_submit=True):
-        st.write("eg - CNN or billgates")
         usernames, submit = st.columns([2,1])
         with usernames:
             ids = st.text_input('Enter usernames', placeholder = 'eg - CNN or billgates')
