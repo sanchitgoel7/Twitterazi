@@ -18,7 +18,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 def landing_page():
-    st.title("Twitter App")
+    st.title("Twitterazi : See what your favourite influencers are tweeting about.")
     state = st.session_state
 
     if 'submit' not in state:
@@ -126,6 +126,7 @@ def get_tweets_wKeyword(top_words,tweets):
 
 def get_usernames():
     with st.form(key = 'usernames', clear_on_submit=True):
+        st.write("eg - CNN or billgates")
         usernames, submit = st.columns([2,1])
         with usernames:
             ids = st.text_input('Enter usernames')
