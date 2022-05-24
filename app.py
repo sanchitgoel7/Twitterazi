@@ -3,9 +3,19 @@ import ast
 import itertools
 import matplotlib.pyplot as plt
 import matplotlib
-from utils.post_req import *
-from utils.get_visuals import *
+from UI.utils.post_req import *
+from UI.utils.get_visuals import *
 import time
+
+#from fastapi import FastAPI, Request
+import json
+import configparser
+
+from Consolidation.get_tweets import get_tweets
+from NLP.main import analyse_tweet
+
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def landing_page():
     st.title("Twitter App")
@@ -27,9 +37,10 @@ def landing_page():
     if submit == True or state.submit == True:
         state.submit = True
         if state.response == {}:
-            url, health, form = get_endpoint()
-            response = post_req(url, form, ids)
-            response = ast.literal_eval(response)
+            #url, health, form = get_endpoint()
+            #response = post_req(url, form, ids)
+            #response = ast.literal_eval(response)
+            response = run_bot(ids)
             state.response = response
         #print("Respone from soln")
         response = state.response
@@ -74,6 +85,24 @@ def landing_page():
     else:
         pass 
 
+def run_bot(Request):
+    #input = await request.json()
+    ids = Request
+    #print(ids)
+    tweets_keys = []
+    tweets_entites = []
+    df_tweets = get_tweets(ids,config)
+    #print(df_tweets)
+    
+    for tweet in df_tweets['Tweet']:
+        entities,keywords =  analyse_tweet(tweet)
+        dict_e = {'tweet':tweet,'entities':entities}
+        dict_k = {'tweet':tweet,'keywords':keywords}
+        tweets_entites.append(dict_e)
+        tweets_keys.append(dict_k)
+        #print(keywords)
+    response = {'entities': tweets_entites, 'keywords': tweets_keys, 'data': df_tweets['Tweet']}
+    return response
 
 #@st.cache(hash_funcs={matplotlib.figure.Figure: hash}, suppress_st_warning=True)
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
