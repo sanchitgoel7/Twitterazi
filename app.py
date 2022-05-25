@@ -47,7 +47,7 @@ def landing_page():
             
             #fig = state.fig
             st.pyplot(plot_wordcloud(wordcloud))  
-
+           
             st.header('Entities:')
             person_entities = []
             org_entities = []
@@ -154,7 +154,7 @@ def run_bot(Request):
 def plot_wordcloud(wordcloud):
     #st.warning("CACHE MISS")
     #time.sleep(2)
-    fig = plt.figure(figsize=(10, 7.5))
+    fig = plt.figure(figsize=(20, 15))
     # Display image
     plt.imshow(wordcloud) 
     # No axis 
