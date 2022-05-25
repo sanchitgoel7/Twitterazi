@@ -17,9 +17,9 @@ config = configparser.ConfigParser()
 config.read('config/config.ini')
 
 def landing_page():
-    st.set_page_config(layout="wide")
+    #st.set_page_config(layout="wide")
     st.title("Twitterazi")
-    st.text("See what your favourite influencers are tweeting about")
+    st.subheader("See what your favourite influencers are tweeting about:")
     state = st.session_state
 
     if 'submit' not in state:
@@ -35,57 +35,100 @@ def landing_page():
     print(submit)
     print(ids)
     #print(ids)    
-    if submit == True or state.submit == True:
+    if submit == True:
         state.submit = True
-        if state.response == {}:
+        try:
             response = run_bot(ids)
             state.response = response
         #print("Respone from soln")
-        response = state.response
-        st.header('Entities:')
-        person_entities = []
-        org_entities = []
-        loc_entities = []
-        for entity_dict_ in response['entities']:
-            for entity in entity_dict_['entities']:
-                if entity['label'] == "PERSON":
-                    entity_text = str(entity['text'])
-                    person_entities.append(entity_text)
-                elif entity['label'] == "ORG":
-                    entity_text = str(entity['text'])
-                    org_entities.append(entity_text)
-                else:
-                    entity_text = str(entity['text'])
-                    loc_entities.append(entity_text)
 
-        display_mentions(person_entities, response['data'])
-        display_organizations(org_entities, response['data'])
-        display_locations(loc_entities, response['data'])
-        #set_ent = set(list_of_entities)       
-        #st.write(set_ent)
-
-        st.subheader('Keywords:')
-        if state.wordcloud == {}:
             wordcloud = get_wordcloud(response['keywords'])
             state.wordcloud = wordcloud
-        wordcloud = state.wordcloud
-        
-        #fig = state.fig
-        st.pyplot(plot_wordcloud(wordcloud))  
+            
+            #fig = state.fig
+            st.pyplot(plot_wordcloud(wordcloud))  
 
-        #print('donee')
-        top_words = sorted(wordcloud.words_ , key=wordcloud.words_.get, reverse = True)[:20]
-        key_tweets = get_tweets_wKeyword(top_words,response['data'])
-        count = 1
-        if key_tweets:
-            for tweet in key_tweets:
-                st.write(str(count) + ". "+tweet)
-                count += 1
+            st.header('Entities:')
+            person_entities = []
+            org_entities = []
+            loc_entities = []
+            for entity_dict_ in response['entities']:
+                for entity in entity_dict_['entities']:
+                    if entity['label'] == "PERSON":
+                        entity_text = str(entity['text'])
+                        person_entities.append(entity_text)
+                    elif entity['label'] == "ORG":
+                        entity_text = str(entity['text'])
+                        org_entities.append(entity_text)
+                    else:
+                        entity_text = str(entity['text'])
+                        loc_entities.append(entity_text)
+
+            display_mentions(person_entities, response['data'])
+            display_organizations(org_entities, response['data'])
+            display_locations(loc_entities, response['data'])
+            #set_ent = set(list_of_entities)       
+            #st.write(set_ent)
+
+            #print('donee')
+            st.subheader('Keywords:')
+            top_words = sorted(wordcloud.words_ , key=wordcloud.words_.get, reverse = True)[:20]
+            key_tweets = get_tweets_wKeyword(top_words,response['data'])
+            count = 1
+            if key_tweets:
+                for tweet in key_tweets:
+                    st.write(str(count) + ". "+tweet)
+                    count += 1
+        except:
+            st.error("Please input a valid Twitter username. Try 'Potus' or 'rihanna'")
         #for word in top_words:
         #    st.write("*" + word)
         #st.markdown(response['keywords'][0])
     else:
-        pass 
+        if state.submit == True:
+            try:
+                if state.response != {}:
+                    response = state.response
+
+                if state.wordcloud != {}:
+                    wordcloud = state.wordcloud
+                
+                #fig = state.fig
+                st.pyplot(plot_wordcloud(wordcloud))  
+
+                st.header('Entities:')
+                person_entities = []
+                org_entities = []
+                loc_entities = []
+                for entity_dict_ in response['entities']:
+                    for entity in entity_dict_['entities']:
+                        if entity['label'] == "PERSON":
+                            entity_text = str(entity['text'])
+                            person_entities.append(entity_text)
+                        elif entity['label'] == "ORG":
+                            entity_text = str(entity['text'])
+                            org_entities.append(entity_text)
+                        else:
+                            entity_text = str(entity['text'])
+                            loc_entities.append(entity_text)
+
+                display_mentions(person_entities, response['data'])
+                display_organizations(org_entities, response['data'])
+                display_locations(loc_entities, response['data'])
+                #set_ent = set(list_of_entities)       
+                #st.write(set_ent)
+
+                #print('donee')
+                st.subheader('Keywords:')
+                top_words = sorted(wordcloud.words_ , key=wordcloud.words_.get, reverse = True)[:20]
+                key_tweets = get_tweets_wKeyword(top_words,response['data'])
+                count = 1
+                if key_tweets:
+                    for tweet in key_tweets:
+                        st.write(str(count) + ". "+tweet)
+                        count += 1
+            except:
+                st.error("Please input a valid Twitter username. Try 'Potus' or 'rihana")
 
 def run_bot(Request):
     #input = await request.json()
@@ -109,9 +152,9 @@ def run_bot(Request):
 #@st.cache(hash_funcs={matplotlib.figure.Figure: hash}, suppress_st_warning=True)
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
 def plot_wordcloud(wordcloud):
-    st.warning("CACHE MISS")
+    #st.warning("CACHE MISS")
     #time.sleep(2)
-    fig = plt.figure(figsize=(20, 15))
+    fig = plt.figure(figsize=(10, 7.5))
     # Display image
     plt.imshow(wordcloud) 
     # No axis 
@@ -121,7 +164,7 @@ def plot_wordcloud(wordcloud):
     return fig
 
 def get_tweets_wKeyword(top_words,tweets):
-    option = st.selectbox('Top keywords',top_words)
+    option = st.selectbox('',top_words)
     tweets = list(tweets )
     key_tweets = [tweet for tweet in tweets if option in tweet]
     return key_tweets
@@ -139,7 +182,7 @@ def get_usernames():
 def display_mentions(person_entities, tweets):
     mentions, tweets_mentions = st.columns([1,3])
     person_entities = sorted(list(set(person_entities)))
-    person_entities = ['<select>']+person_entities
+    person_entities = ['Please Select']+person_entities
     with mentions:
         option = st.selectbox('Mentions',person_entities)
         #st.subheader("Mentions")
@@ -159,7 +202,7 @@ def display_mentions(person_entities, tweets):
 def display_organizations(org_entities, tweets):
     org, tweets_org = st.columns([1,3])
     org_entities = sorted(list(set(org_entities)))
-    org_entities = ['<select>']+org_entities
+    org_entities = ['Please Select']+org_entities
     with org:
         option = st.selectbox('Organizations',org_entities)
 
@@ -176,7 +219,7 @@ def display_organizations(org_entities, tweets):
 def display_locations(loc_entities, tweets):
     loc, tweets_loc = st.columns([1,3])
     loc_entities = sorted(list(set(loc_entities)))
-    loc_entities = ['<select>']+loc_entities
+    loc_entities = ['Please Select']+loc_entities
     with loc:
         option = st.selectbox('Locations',loc_entities)
 

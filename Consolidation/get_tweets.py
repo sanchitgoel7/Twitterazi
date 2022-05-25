@@ -34,7 +34,8 @@ def get_tweets(usernames,config):
         tweet_user = tweet.user.screen_name
         tweet_text = tweet.full_text
         tweet_text = re.sub(r'http\S+', '', tweet_text)
-        tweet_text = re.sub(r'amp', ' ', tweet_text)
+        tweet_text = re.sub(r'&amp;', '&', tweet_text)
+        tweet_text = re.sub(r'\n', ' ', tweet_text)
         date = tweet.created_at.strftime('%Y-%m-%d')
         fav = tweet.favorite_count
         data.append([tweet_user, tweet_text, date, fav])
