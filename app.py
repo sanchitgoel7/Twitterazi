@@ -14,9 +14,10 @@ from Consolidation.get_tweets import get_tweets
 from NLP.main import analyse_tweet
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('config/config.ini')
 
 def landing_page():
+    st.set_page_config(layout="wide")
     st.title("Twitterazi")
     st.text("See what your favourite influencers are tweeting about")
     state = st.session_state
@@ -42,13 +43,27 @@ def landing_page():
         #print("Respone from soln")
         response = state.response
         st.header('Entities:')
-        list_of_entities = []
+        person_entities = []
+        org_entities = []
+        loc_entities = []
         for entity_dict_ in response['entities']:
             for entity in entity_dict_['entities']:
-                entity_text = str(entity['text']+"-"+entity['label'])
-                list_of_entities.append(entity_text)
-        set_ent = set(list_of_entities)       
-        st.write(set_ent)
+                if entity['label'] == "PERSON":
+                    entity_text = str(entity['text'])
+                    person_entities.append(entity_text)
+                elif entity['label'] == "ORG":
+                    entity_text = str(entity['text'])
+                    org_entities.append(entity_text)
+                else:
+                    entity_text = str(entity['text'])
+                    loc_entities.append(entity_text)
+
+        display_mentions(person_entities, response['data'])
+        display_organizations(org_entities, response['data'])
+        display_locations(loc_entities, response['data'])
+        #set_ent = set(list_of_entities)       
+        #st.write(set_ent)
+
         st.subheader('Keywords:')
         if state.wordcloud == {}:
             wordcloud = get_wordcloud(response['keywords'])
@@ -95,8 +110,8 @@ def run_bot(Request):
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
 def plot_wordcloud(wordcloud):
     st.warning("CACHE MISS")
-    time.sleep(2)
-    fig = plt.figure(figsize=(40, 30))
+    #time.sleep(2)
+    fig = plt.figure(figsize=(20, 15))
     # Display image
     plt.imshow(wordcloud) 
     # No axis 
@@ -121,6 +136,59 @@ def get_usernames():
             submit_request = st.form_submit_button(label = 'Submit')
     return submit_request,ids 
 
+def display_mentions(person_entities, tweets):
+    mentions, tweets_mentions = st.columns([1,3])
+    person_entities = sorted(list(set(person_entities)))
+    person_entities = ['<select>']+person_entities
+    with mentions:
+        option = st.selectbox('Mentions',person_entities)
+        #st.subheader("Mentions")
+        #for entity in list(set(person_entities)):
+            #st.text(entity)
+
+    with tweets_mentions:
+        text = ""
+        count = 1
+        tweets = list(tweets) 
+        mentions_tweets = [tweet for tweet in tweets if option in tweet]
+        for tweet in mentions_tweets:
+            text = text + "- " + tweet +"\n"
+            count += 1
+        st.text_area('Tweets',text, key=1)
+
+def display_organizations(org_entities, tweets):
+    org, tweets_org = st.columns([1,3])
+    org_entities = sorted(list(set(org_entities)))
+    org_entities = ['<select>']+org_entities
+    with org:
+        option = st.selectbox('Organizations',org_entities)
+
+    with tweets_org:
+        text = ""
+        count = 1
+        tweets = list(tweets) 
+        org_tweets = [tweet for tweet in tweets if option in tweet]
+        for tweet in org_tweets:
+            text = text + "- " + tweet +"\n"
+            count += 1
+        st.text_area('Tweets',text, key=2)
+
+def display_locations(loc_entities, tweets):
+    loc, tweets_loc = st.columns([1,3])
+    loc_entities = sorted(list(set(loc_entities)))
+    loc_entities = ['<select>']+loc_entities
+    with loc:
+        option = st.selectbox('Locations',loc_entities)
+
+    with tweets_loc:
+        text = ""
+        count = 1
+        tweets = list(tweets) 
+        loc_tweets = [tweet for tweet in tweets if option in tweet]
+        for tweet in loc_tweets:
+            text = text + "- "  + tweet +"\n"
+            count += 1
+        st.text_area('Tweets',text, key=3)
 
 landing_page() 
 #print(ids,response)

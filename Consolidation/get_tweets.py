@@ -1,5 +1,6 @@
 import tweepy
 import pandas as pd
+import re
 
 def get_tweets(usernames,config):
     # read configs
@@ -17,7 +18,7 @@ def get_tweets(usernames,config):
 
     # user tweets
     users = usernames
-    limit=100
+    limit=60
 
 
     columns = ['User', 'Tweet','Date','fav']
@@ -32,6 +33,8 @@ def get_tweets(usernames,config):
         #print(tweet)
         tweet_user = tweet.user.screen_name
         tweet_text = tweet.full_text
+        tweet_text = re.sub(r'http\S+', '', tweet_text)
+        tweet_text = re.sub(r'amp', ' ', tweet_text)
         date = tweet.created_at.strftime('%Y-%m-%d')
         fav = tweet.favorite_count
         data.append([tweet_user, tweet_text, date, fav])
@@ -39,6 +42,7 @@ def get_tweets(usernames,config):
     df = pd.DataFrame(data, columns=columns)
     df['Date']= pd.to_datetime(df['Date'], format = "%Y-%m-%d")
     df = df.loc[df['Date'] >= '2022-4-19']
+    df = df.sort_values(by='Date')
     print(df)
 
     return df

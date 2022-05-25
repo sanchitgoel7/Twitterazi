@@ -12,7 +12,7 @@ def get_wordcloud(keywords_list):
             if len(keyword['text']) >= 3:
                 text += keyword['text']+ " "
 
-    wordcloud = WordCloud(width = 3000, height = 2000, random_state=1, background_color='white', collocations=True,
+    wordcloud = WordCloud(width = 3000, height = 1500, random_state=1, background_color='white', collocations=True,
                 stopwords = stopwords).generate(text)
     """
     word_dict = WordCloud().process_text(text)
