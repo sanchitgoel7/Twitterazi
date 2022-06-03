@@ -3,7 +3,7 @@
 
 Twitterazi is an app that allows users to get an overview of the topics a particular twitter user has tweeted about in the past month. 
 
-It retrieves tweets of the provided user id from twitter api and returns entities and keywrods withi the tweets. Which can then be used to filter out the tweets that contained any of the words.
+It retrieves tweets of the provided user id from twitter api and returns entities and keywrods found within the tweets. Which can then be used to filter out the tweets that contained any of the words.
 
 1. Input a valid Twitter ID eg.- 'billgates' 
 <img src="https://user-images.githubusercontent.com/105559691/171840573-078db26b-9fbf-4d44-8f9a-b4e224e7ba9f.png" width="700"/>
