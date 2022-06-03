@@ -6,7 +6,7 @@ Twitterazi is an app that allows users to get an overview of the topics a partic
 It retrieves tweets of the provided user id from twitter api and returns entities and keywrods found within the tweets. Which can then be used to filter out the tweets that contained any of the words.
 
 1. Input a valid Twitter ID eg.- 'billgates' 
-<img src="(https://user-images.githubusercontent.com/105559691/171844916-9e138a27-ed5a-4d3e-8e04-1c95a343f5c9.png)" width="700"/>
+<img src="https://user-images.githubusercontent.com/105559691/171844916-9e138a27-ed5a-4d3e-8e04-1c95a343f5c9.png" width="700"/>
 2. Output in the form of word cloud
 <img src="https://user-images.githubusercontent.com/105559691/171841269-b8cb529c-7098-4693-81ba-517e128f675a.png" width="700"/>
 
